@@ -12,6 +12,8 @@ typedef struct {
     char     error_msg[ERR_MSG_MAX_LEN];
 } terminal_token;
 
+terminal_token scan_token(char *input);
+
 terminal_token scan_alfabet(char *input);
 
 terminal_token scan_angka(char *input);

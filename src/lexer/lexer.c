@@ -4,6 +4,44 @@
 #include "../constants.h"
 #include "lexer.h"
 
+/*
+ * scan_token() works by pattern matching given string via calling all scan_*()
+ * methods one-by-one and return a `terminal_token` object.
+ */
+terminal_token scan_token(char *input) {
+    terminal_token result;
+
+    // TODO: Reorder the pattern matching as it affect the token precedence
+    result = scan_alfabet(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_angka(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_simbol(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_simbol_identasi(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_spasi(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_identasi(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_berhenti(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_boolean(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_angka_bulat(input);
+    if (result.type != INVALID) return result;
+
+    return result; /* default fallback after last call still invalid */
+}
+
 terminal_token scan_alfabet(char *input) {
     terminal_token result;
     result.value = input;
@@ -15,8 +53,9 @@ terminal_token scan_alfabet(char *input) {
     int idx = 0;
     bool is_alfabet = false;
     for(;;) {
-        if ((65 <= input[idx] && input[idx] <= 90) || (97 <= input[idx] && input[idx] <= 122)) {
-            if (!is_alfabet) is_alfabet = true; /* set detection flag for the first time */
+        if ((65 <= input[idx] && input[idx] <= 90) || 
+                (97 <= input[idx] && input[idx] <= 122)) {
+            if (!is_alfabet) is_alfabet = true; /* set flag only at first time */
             result.next++;
             result.length++;
             idx++;

@@ -31,4 +31,6 @@ typedef enum {
     PARAMETER
 } NONTERMINAL;
 
+const char* get_terminal_name(TERMINAL t);
+
 #endif
