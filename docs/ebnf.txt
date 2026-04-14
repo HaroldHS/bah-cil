@@ -1,0 +1,81 @@
+(*
+    E-BNF annotation for bah-cil programming language.
+
+    NOTE: This E-BNF changes overtime according to the complexity of the programming language.
+*)
+
+(* alphabet *)
+alfabet = "A" | "B" | "C" | .. | "Z" | "a" | "b" | "c" | .. | "z" .
+
+(* digit / number *)
+angka = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" .
+
+(* symbol *)
+simbol = "[" | "]" | "{" | "}" | "(" | ")" | "<" | ">" | "'" |
+         '"' | "=" | "." | "," | ";" | "+" | "-" | "/" | "*" |
+         "\" | "?" | "|" | "&" | "_" .
+
+(* identation related symbol *)
+simbol_identasi = "\n" | "\t" | "\r" .
+
+(* space *)
+spasi = " " .
+
+(* identation *)
+identasi = {simbol_identasi | spasi} .
+
+(* terminator *)
+berhenti = ";" .
+
+(* boolean term *)
+boolean = "benar" | "salah" .
+
+(* integer term *)
+angka_bulat = ["-"] {angka} .
+
+(* string terminal *)
+untaian = "`" {alfabet | angka | simbol | spasi} "`" .
+
+(* identifier *)
+nama = alfabet {alfabet | angka | "_"} .
+
+(* datatype keyword *)
+kata_kunci_tipe_data = "bilangan-bulat" | "boolean" | "untaian" .
+
+(* variable declaration *)
+variabel = "variabel" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi (angka_bulat | boolean | untaian) berhenti .
+
+(* constant declaration *)
+konstanta = "konstanta" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi ( angka_bulat | boolean | untaian) berhenti .
+
+(*
+    arithmetic expression, implemented with Recursive Descent Parser method
+
+    E = E + T | T -- becomes --> E = T {("+" | "-") [spasi] T}
+    T = T * F | F -- becomes --> T = F {("*" | "/") [spasi] F}
+    F = identifier | integer | "(" E ")" | "-" F
+*)
+ekspresi_aritmatika = istilah {("+" | "-") [spasi] istilah} .                             (* expression / E *)
+istilah = faktor {("*" | "/") [spasi] faktor} .                                           (* term / T *)
+faktor = "variabel" spasi nama | angka_bulat | "(" ekspresi_aritmatika ")" | "-" faktor . (* factor / F *)
+
+(* conditional expression *)
+kondisi = ekspresi_aritmatika [spasi] ("==" | "!=" | "<" | ">" | "<=" | ">=") [spasi] ekspresi_aritmatika |
+          ekspresi_aritmatika [spasi] ("==" | "!=") [spasi] boolean                                       |
+          boolean [spasi] ("==" | "!=") [spasi] ekspresi_aritmatika .
+
+(* printing expression *)
+ekspresi_tampilkan = "tampilkan" spasi (ekspresi_aritmatika | untaian) berhenti .
+
+(* statements *)
+pernyataan = [identasi] ekspresi_tampilkan berhenti                                  |
+             [identasi] variabel                                                     |
+             [identasi] konstanta                                                    |
+             [identasi] "jika" spasi kondisi spasi "maka" pernyataan "berakhir"      | (* if statement *)
+             [identasi] "ulangi" spasi kondisi spasi "lakukan" pernyataan "berakhir" . (* loop statement *)
+
+(* function declaration *)
+fungsi = "fungsi" spasi nama spasi "(" [kumpulan_parameter] ")" [spasi kata_kunci_tipe_data] spasi "{" {pernyataan} "}" .
+kumpulan_parameter = parameter {"," parameter} .
+parameter = nama [spasi] ":" spasi kata_kunci_tipe_data .
+
