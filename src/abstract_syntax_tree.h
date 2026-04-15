@@ -3,9 +3,11 @@
 
 #include <stdbool.h>
 #include "grammar_enum.h"
+#include "lexer/lexer.h"
 
 typedef struct {
-    TERMINAL    terminal_type;
+    token       tokens[MAX_TOKEN_IN_ONE_AST_NODE];
+    EXPRESSION  expression_type;
     char        *value;
     int         value_length;
     struct      ast_node *left;

@@ -10,36 +10,36 @@ typedef struct {
     char     *next;
     int      length;
     char     error_msg[ERR_MSG_MAX_LEN];
-} terminal_token;
+} token;
 
-terminal_token scan_token(char *input);
+token scan_token(char *input);
 
-terminal_token scan_alfabet(char *input);
+token scan_alfabet(char *input);
 
-terminal_token scan_angka(char *input);
+token scan_angka(char *input);
 
-terminal_token scan_simbol(char *input);
+token scan_simbol(char *input);
 
-terminal_token scan_simbol_identasi(char *input);
+token scan_simbol_identasi(char *input);
 
-terminal_token scan_spasi(char *input);
+token scan_spasi(char *input);
 
-terminal_token scan_identasi(char *input);
+token scan_identasi(char *input);
 
-terminal_token scan_berhenti(char *input);
+token scan_berhenti(char *input);
 
-terminal_token scan_boolean(char *input);
+token scan_boolean(char *input);
 
-terminal_token scan_angka_bulat(char *input);
+token scan_angka_bulat(char *input);
 
-terminal_token scan_untaian(char *input);
+token scan_untaian(char *input);
 
-terminal_token scan_name(char *input);
+token scan_nama(char *input);
 
-terminal_token scan_kata_kunci_tipe_data(char *input);
+token scan_kata_kunci_tipe_data(char *input);
 
-terminal_token scan_variabel(char *input);
+token scan_variabel(char *input);
 
-terminal_token scan_konstanta(char *input);
+token scan_konstanta(char *input);
 
 #endif

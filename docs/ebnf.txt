@@ -42,10 +42,10 @@ nama = alfabet {alfabet | angka | "_"} .
 (* datatype keyword *)
 kata_kunci_tipe_data = "bilangan-bulat" | "boolean" | "untaian" .
 
-(* variable declaration *)
+(* variable expression *)
 variabel = "variabel" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi (angka_bulat | boolean | untaian) berhenti .
 
-(* constant declaration *)
+(* constant expression *)
 konstanta = "konstanta" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi ( angka_bulat | boolean | untaian) berhenti .
 
 (*

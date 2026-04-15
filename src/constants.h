@@ -1,7 +1,8 @@
 #ifndef constants_h
 #define constants_h
 
-#define ERR_MSG_MAX_LEN 200
+#define ERR_MSG_MAX_LEN                    200
+#define MAX_TOKEN_IN_ONE_AST_NODE 10
 
 /*
  * Error constants for lexer / tokenizer

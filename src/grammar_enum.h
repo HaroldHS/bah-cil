@@ -14,8 +14,18 @@ typedef enum {
     UNTAIAN,
     NAMA,
     KATA_KUNCI_TIPE_DATA,
-    INVALID,
+    INVALID
 } TERMINAL;
+
+typedef enum {
+    VARIABEL,
+    KONSTANTA,
+    ARITMATIKA,
+    ISTILAH,
+    FAKTOR,
+    KONDISI,
+    TAMPILKAN
+} EXPRESSION;
 
 const char* get_terminal_name(TERMINAL t);
 

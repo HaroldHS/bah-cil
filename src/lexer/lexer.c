@@ -7,16 +7,16 @@
 
 /*
  * scan_token() works by pattern matching given string via calling all scan_*()
- * methods one-by-one and return a `terminal_token` object.
+ * methods one-by-one and return a `token` object.
  */
-terminal_token scan_token(char *input) {
-    terminal_token result;
+token scan_token(char *input) {
+    token result;
 
     // TODO: Reorder the pattern matching as it affect the token precedence
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID) return result;
 
-    //result = scan_angka_nama(input);
+    //result = scan_nama(input);
     //if (result.type != INVALID) return result;
 
     result = scan_angka_bulat(input);
@@ -49,8 +49,8 @@ terminal_token scan_token(char *input) {
     return result; /* default fallback after last call still invalid */
 }
 
-terminal_token scan_alfabet(char *input) {
-    terminal_token result;
+token scan_alfabet(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -78,8 +78,8 @@ terminal_token scan_alfabet(char *input) {
     return result;
 }
 
-terminal_token scan_angka(char *input) {
-    terminal_token result;
+token scan_angka(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -106,8 +106,8 @@ terminal_token scan_angka(char *input) {
     return result;
 }
 
-terminal_token scan_simbol(char *input) {
-    terminal_token result;
+token scan_simbol(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -130,8 +130,8 @@ terminal_token scan_simbol(char *input) {
     return result;
 }
 
-terminal_token scan_simbol_identasi(char *input) {
-    terminal_token result;
+token scan_simbol_identasi(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -151,8 +151,8 @@ terminal_token scan_simbol_identasi(char *input) {
     return result;
 }
 
-terminal_token scan_spasi(char *input) {
-    terminal_token result;
+token scan_spasi(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -168,8 +168,8 @@ terminal_token scan_spasi(char *input) {
     return result;
 }
 
-terminal_token scan_identasi(char *input) {
-    terminal_token result;
+token scan_identasi(char *input) {
+    token result;
     result.type = IDENTASI;
     result.value = input;
     result.next = input;
@@ -177,8 +177,8 @@ terminal_token scan_identasi(char *input) {
     strncpy(result.error_msg, "\0", 1);
 
     for (;;) {
-        terminal_token simbol_identasi_token = scan_simbol_identasi(input);
-        terminal_token spasi_token = scan_simbol_identasi(input);
+        token simbol_identasi_token = scan_simbol_identasi(input);
+        token spasi_token = scan_simbol_identasi(input);
         if (simbol_identasi_token.length != 0) {
             input += simbol_identasi_token.length;
             result.next += simbol_identasi_token.length;
@@ -196,8 +196,8 @@ terminal_token scan_identasi(char *input) {
     return result;
 }
 
-terminal_token scan_berhenti(char *input) {
-    terminal_token result;
+token scan_berhenti(char *input) {
+    token result;
     result.value = input;
     result.next = input;
     result.length = 0;
@@ -213,8 +213,8 @@ terminal_token scan_berhenti(char *input) {
     return result;
 }
 
-terminal_token scan_boolean(char *input) {
-    terminal_token result;
+token scan_boolean(char *input) {
+    token result;
     result.next = input;
     result.value = input;
     result.length = 0;
@@ -244,8 +244,8 @@ terminal_token scan_boolean(char *input) {
     return result;
 }
 
-terminal_token scan_angka_bulat(char *input) {
-    terminal_token result;
+token scan_angka_bulat(char *input) {
+    token result;
     result.next = input;
     result.value = input;
     result.length = 0;
@@ -253,7 +253,7 @@ terminal_token scan_angka_bulat(char *input) {
     strncpy(result.error_msg, LEX_ANGKA_BULAT_ERR, sizeof(result.error_msg)-1);
 
     if (input[0] == '-') {
-        terminal_token angka_token = scan_angka(++input);
+        token angka_token = scan_angka(++input);
         if (angka_token.type == ANGKA) {
             result.type = ANGKA_BULAT;
             result.next += angka_token.length + 1; /* +1 due to minus symbol */
@@ -261,7 +261,7 @@ terminal_token scan_angka_bulat(char *input) {
             strncpy(result.error_msg, "\0", 1);
         }
     } else {
-        terminal_token angka_token = scan_angka(input);
+        token angka_token = scan_angka(input);
         if (angka_token.type == ANGKA) {
             result.type = ANGKA_BULAT;
             result.next += angka_token.length;
@@ -272,13 +272,18 @@ terminal_token scan_angka_bulat(char *input) {
     return result;
 }
 
-terminal_token scan_name(char *input) {
-    terminal_token result;
+token scan_nama(char *input) {
+    token result;
     return result;
 }
 
-terminal_token scan_kata_kunci_tipe_data(char *input) {
-    terminal_token result;
+token scan_untaian(char *input) {
+    token result;
+    return result;
+}
+
+token scan_kata_kunci_tipe_data(char *input) {
+    token result;
     result.next = input;
     result.value = input;
     result.length = 0;
