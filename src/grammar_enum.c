@@ -13,7 +13,21 @@ const char* get_terminal_name(TERMINAL t) {
         case UNTAIAN:              return "UNTAIAN";
         case NAMA:                 return "NAMA";
         case KATA_KUNCI_TIPE_DATA: return "KATA_KUNCI_TIPE_DATA";
-        case INVALID:              return "INVALID";
+        case INVALID_TERMINAL:     return "INVALID";
         default:                   return "INVALID";
+    }
+}
+
+const char* get_expression_name(EXPRESSION e) {
+    switch (e) {
+        case VARIABEL:           return "VARIABEL";
+        case KONSTANTA:          return "KONSTANTA";
+        case ARITMATIKA:         return "ARITMATIKA";
+        case ISTILAH:            return "ISTILAH";
+        case FAKTOR:             return "FAKTOR";
+        case KONDISI:            return "KONDISI";
+        case TAMPILKAN:          return "TAMPILKAN";
+        case INVALID_EXPRESSION: return "INVALID";
+        default:                 return "INVALID";
     }
 }

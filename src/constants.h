@@ -1,7 +1,7 @@
 #ifndef constants_h
 #define constants_h
 
-#define ERR_MSG_MAX_LEN                    200
+#define ERR_MSG_MAX_LEN           200
 #define MAX_TOKEN_IN_ONE_AST_NODE 10
 
 /*
@@ -21,7 +21,12 @@
 #define LEX_KATA_KUNCI_TIPE_DATA_ERR "failed to scan keyword"
 
 /*
- * Macro to stringify string constants for assignment
+ * Error constants for parser
+ */
+#define PARS_VARIABEL_ERR "failed to parse variable"
+
+/*
+ * Macro to stringify string constants to obtain the constant name
  */
 #define STRINGIFY(x) #x
 

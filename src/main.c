@@ -2,8 +2,10 @@
 
 #include "grammar_enum.h"
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 
 int main() {
+    /* Lexer / Tokenizer example */
     char *test1 = "bilangan-bulat -123;";
     token result1 = scan_token(test1);
     printf("Terminal token: %s\n", result1.value);
@@ -32,6 +34,12 @@ int main() {
     printf("Terminal token value: %.*s\n", result4.length, result4.value);
     printf("Terminal token error message: %s\n", result4.error_msg);
     printf("Next string: %s\n\n", result4.next);
+
+    /* Parser example*/
+    char *expr_input_1 = "variabel bilangan-bulat test = 123;";
+    ast_node expr_result_1 = parse_variabel(expr_input_1);
+    printf("Expression type: %s\n", get_expression_name(expr_result_1.type));
+    printf("Expression error message: %s\n", expr_result_1.error_msg);
 
     return 0;
 }

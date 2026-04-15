@@ -14,37 +14,37 @@ token scan_token(char *input) {
 
     // TODO: Reorder the pattern matching as it affect the token precedence
     result = scan_kata_kunci_tipe_data(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     //result = scan_nama(input);
-    //if (result.type != INVALID) return result;
+    //if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka_bulat(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_berhenti(input); /* first ';' labelled as BERHENTI, not SIMBOL */
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_alfabet(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_simbol(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_simbol_identasi(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_spasi(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_identasi(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_boolean(input);
-    if (result.type != INVALID) return result;
+    if (result.type != INVALID_TERMINAL) return result;
 
     return result; /* default fallback after last call still invalid */
 }
@@ -54,8 +54,8 @@ token scan_alfabet(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
-    strncpy(result.error_msg, STRINGIFY(LEX_ALFABET_ERR), sizeof(result.error_msg)-1);
+    result.type = INVALID_TERMINAL;
+    strncpy(result.error_msg, LEX_ALFABET_ERR, sizeof(result.error_msg)-1);
 
     int idx = 0;
     bool is_alfabet = false;
@@ -83,7 +83,7 @@ token scan_angka(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_ERR, sizeof(result.error_msg)-1);
 
     int idx = 0;
@@ -111,7 +111,7 @@ token scan_simbol(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_SIMBOL_ERR, sizeof(result.error_msg)-1);
 
     char list_of_symbols[22] = {
@@ -135,7 +135,7 @@ token scan_simbol_identasi(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_SIMBOL_IDENTASI_ERR, sizeof(result.error_msg)-1);
 
     char list_of_identation_symbols[2] = {'\n', '\t'};
@@ -156,7 +156,7 @@ token scan_spasi(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_SPASI_ERR, sizeof(result.error_msg)-1);
 
     if (input[0] == ' ') {
@@ -201,7 +201,7 @@ token scan_berhenti(char *input) {
     result.value = input;
     result.next = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_BERHENTI_ERR, sizeof(result.error_msg)-1);
 
     if (input[0] == ';') {
@@ -218,7 +218,7 @@ token scan_boolean(char *input) {
     result.next = input;
     result.value = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_BOOLEAN_ERR, sizeof(result.error_msg)-1);
 
     char* benar = "benar";
@@ -249,7 +249,7 @@ token scan_angka_bulat(char *input) {
     result.next = input;
     result.value = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_BULAT_ERR, sizeof(result.error_msg)-1);
 
     if (input[0] == '-') {
@@ -287,7 +287,7 @@ token scan_kata_kunci_tipe_data(char *input) {
     result.next = input;
     result.value = input;
     result.length = 0;
-    result.type = INVALID;
+    result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_KATA_KUNCI_TIPE_DATA_ERR, sizeof(result.error_msg)-1);
 
     if (strncmp(input, "bilangan-bulat", 14) == 0) {

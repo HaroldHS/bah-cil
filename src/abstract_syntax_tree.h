@@ -6,12 +6,11 @@
 #include "lexer/lexer.h"
 
 typedef struct {
-    token       tokens[MAX_TOKEN_IN_ONE_AST_NODE];
-    EXPRESSION  expression_type;
-    char        *value;
-    int         value_length;
-    struct      ast_node *left;
-    struct      ast_node *right;
+    EXPRESSION type;
+    token      value[MAX_TOKEN_IN_ONE_AST_NODE];
+    struct     ast_node *left;
+    struct     ast_node *right;
+    char       error_msg[ERR_MSG_MAX_LEN];
 } ast_node;
 
 #endif

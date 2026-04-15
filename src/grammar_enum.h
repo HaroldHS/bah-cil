@@ -14,7 +14,7 @@ typedef enum {
     UNTAIAN,
     NAMA,
     KATA_KUNCI_TIPE_DATA,
-    INVALID
+    INVALID_TERMINAL
 } TERMINAL;
 
 typedef enum {
@@ -24,9 +24,11 @@ typedef enum {
     ISTILAH,
     FAKTOR,
     KONDISI,
-    TAMPILKAN
+    TAMPILKAN,
+    INVALID_EXPRESSION
 } EXPRESSION;
 
 const char* get_terminal_name(TERMINAL t);
+const char* get_expression_name(EXPRESSION e);
 
 #endif
