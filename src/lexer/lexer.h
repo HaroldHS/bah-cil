@@ -34,4 +34,12 @@ terminal_token scan_angka_bulat(char *input);
 
 terminal_token scan_untaian(char *input);
 
+terminal_token scan_name(char *input);
+
+terminal_token scan_kata_kunci_tipe_data(char *input);
+
+terminal_token scan_variabel(char *input);
+
+terminal_token scan_konstanta(char *input);
+
 #endif

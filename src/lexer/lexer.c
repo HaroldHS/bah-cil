@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "../constants.h"
@@ -12,6 +13,18 @@ terminal_token scan_token(char *input) {
     terminal_token result;
 
     // TODO: Reorder the pattern matching as it affect the token precedence
+    result = scan_kata_kunci_tipe_data(input);
+    if (result.type != INVALID) return result;
+
+    //result = scan_angka_nama(input);
+    //if (result.type != INVALID) return result;
+
+    result = scan_angka_bulat(input);
+    if (result.type != INVALID) return result;
+
+    result = scan_berhenti(input); /* first ';' labelled as BERHENTI, not SIMBOL */
+    if (result.type != INVALID) return result;
+
     result = scan_alfabet(input);
     if (result.type != INVALID) return result;
 
@@ -30,13 +43,7 @@ terminal_token scan_token(char *input) {
     result = scan_identasi(input);
     if (result.type != INVALID) return result;
 
-    result = scan_berhenti(input);
-    if (result.type != INVALID) return result;
-
     result = scan_boolean(input);
-    if (result.type != INVALID) return result;
-
-    result = scan_angka_bulat(input);
     if (result.type != INVALID) return result;
 
     return result; /* default fallback after last call still invalid */
@@ -48,7 +55,7 @@ terminal_token scan_alfabet(char *input) {
     result.next = input;
     result.length = 0;
     result.type = INVALID;
-    strncpy(result.error_msg, LEX_ALFABET_ERR, sizeof(result.error_msg)-1);
+    strncpy(result.error_msg, STRINGIFY(LEX_ALFABET_ERR), sizeof(result.error_msg)-1);
 
     int idx = 0;
     bool is_alfabet = false;
@@ -131,8 +138,8 @@ terminal_token scan_simbol_identasi(char *input) {
     result.type = INVALID;
     strncpy(result.error_msg, LEX_SIMBOL_IDENTASI_ERR, sizeof(result.error_msg)-1);
 
-    char list_of_identation_symbols[3] = {'\n', '\t', '\r'};
-    for (int i=0; i<3; i++) {
+    char list_of_identation_symbols[2] = {'\n', '\t'};
+    for (int i=0; i<2; i++) {
         if (input[0] == list_of_identation_symbols[i]) {
             result.type = SIMBOL_IDENTASI;
             result.next++;
@@ -230,7 +237,6 @@ terminal_token scan_boolean(char *input) {
 
     if (is_benar_flag || is_salah_flag) {
         result.type = BOOLEAN;
-        result.value = input;
         result.next += 5;
         result.length = 5;
         strncpy(result.error_msg, "\0", 1);
@@ -247,21 +253,51 @@ terminal_token scan_angka_bulat(char *input) {
     strncpy(result.error_msg, LEX_ANGKA_BULAT_ERR, sizeof(result.error_msg)-1);
 
     if (input[0] == '-') {
-        terminal_token simbol_identasi_token = scan_simbol_identasi(++input);
-        if (simbol_identasi_token.length != 0) {
+        terminal_token angka_token = scan_angka(++input);
+        if (angka_token.type == ANGKA) {
             result.type = ANGKA_BULAT;
-            result.next += simbol_identasi_token.length;
-            result.length += simbol_identasi_token.length;
+            result.next += angka_token.length + 1; /* +1 due to minus symbol */
+            result.length += angka_token.length + 1;
             strncpy(result.error_msg, "\0", 1);
         }
     } else {
-        terminal_token simbol_identasi_token = scan_simbol_identasi(++input);
-        if (simbol_identasi_token.length != 0) {
+        terminal_token angka_token = scan_angka(input);
+        if (angka_token.type == ANGKA) {
             result.type = ANGKA_BULAT;
-            result.next += simbol_identasi_token.length;
-            result.length += simbol_identasi_token.length;
+            result.next += angka_token.length;
+            result.length += angka_token.length;
             strncpy(result.error_msg, "\0", 1);
         }
+    } /* if negative number {...} else {-- handle positive number --} */
+    return result;
+}
+
+terminal_token scan_name(char *input) {
+    terminal_token result;
+    return result;
+}
+
+terminal_token scan_kata_kunci_tipe_data(char *input) {
+    terminal_token result;
+    result.next = input;
+    result.value = input;
+    result.length = 0;
+    result.type = INVALID;
+    strncpy(result.error_msg, LEX_KATA_KUNCI_TIPE_DATA_ERR, sizeof(result.error_msg)-1);
+
+    if (strncmp(input, "bilangan-bulat", 14) == 0) {
+        result.type = KATA_KUNCI_TIPE_DATA;
+        result.next += 14;
+        result.length += 14;
+        strncpy(result.error_msg, "\0", 1);
     }
+    if ((strncmp(input, "boolean", 7) == 0) || 
+            (strncmp(input, "untaian", 7) == 0)) {
+        result.type = KATA_KUNCI_TIPE_DATA;
+        result.next += 7;
+        result.length += 7;
+        strncpy(result.error_msg, "\0", 1);
+    }
+
     return result;
 }

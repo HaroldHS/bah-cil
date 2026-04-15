@@ -6,9 +6,6 @@
 
 typedef struct {
     TERMINAL    terminal_type;
-    NONTERMINAL nonterminal_type;
-    bool        is_terminal;
-    bool        is_nonterminal;
     char        *value;
     int         value_length;
     struct      ast_node *left;

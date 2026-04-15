@@ -16,7 +16,7 @@ simbol = "[" | "]" | "{" | "}" | "(" | ")" | "<" | ">" | "'" |
          "\" | "?" | "|" | "&" | "_" .
 
 (* identation related symbol *)
-simbol_identasi = "\n" | "\t" | "\r" .
+simbol_identasi = "\n" | "\t" .
 
 (* space *)
 spasi = " " .
