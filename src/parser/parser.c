@@ -11,12 +11,9 @@ ast_node parse_variabel(char *input) {
     strncpy(result.error_msg, PARS_VARIABEL_ERR, sizeof(result.error_msg)-1);
 
     token var = scan_token(input);
-    if (var.type != ALFABET){
-        char var_word[var.length];
-        sprintf(var_word, "%.*s", var.length, var.value);
-        if (strncmp(var_word, "variabel", 8) != 0) {
-            return result;
-        } /* if not ALFABET type && value is not "variabel" then INVALID */
+    bool is_var = check_token_string(&var, ALFABET, "variabel");
+    if (!is_var) {
+        return result;
     }
 
     token space = scan_token(var.next);

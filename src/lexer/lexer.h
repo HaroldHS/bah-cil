@@ -1,6 +1,8 @@
 #ifndef lexer_h
 #define lexer_h
 
+#include <stdbool.h>
+
 #include "../constants.h"
 #include "../grammar_enum.h"
 
@@ -11,6 +13,8 @@ typedef struct {
     int      length;
     char     error_msg[ERR_MSG_MAX_LEN];
 } token;
+
+bool check_token_string(token *scanned_token, TERMINAL type, char *target);
 
 token scan_token(char *input);
 

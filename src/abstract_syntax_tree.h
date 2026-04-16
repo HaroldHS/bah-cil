@@ -1,7 +1,6 @@
 #ifndef abstract_syntax_tree_h
 #define abstract_syntax_tree_h
 
-#include <stdbool.h>
 #include "grammar_enum.h"
 #include "lexer/lexer.h"
 

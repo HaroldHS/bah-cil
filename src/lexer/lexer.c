@@ -12,11 +12,14 @@
 token scan_token(char *input) {
     token result;
 
-    // TODO: Reorder the pattern matching as it affect the token precedence
+    // Order of the pattern matching affects the token precedence
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID_TERMINAL) return result;
 
     //result = scan_nama(input);
+    //if (result.type != INVALID_TERMINAL) return result;
+
+    //result = scan_untaian(input);
     //if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka_bulat(input);
@@ -47,6 +50,18 @@ token scan_token(char *input) {
     if (result.type != INVALID_TERMINAL) return result;
 
     return result; /* default fallback after last call still invalid */
+}
+
+/*
+ * check_token_string() is the boilerplate for checking token literal in parser.c
+ */
+bool check_token_string(token *scanned_token, TERMINAL type, char *target) {
+    if (scanned_token->type == type) {
+        char var_word[scanned_token->length];
+        sprintf(var_word, "%.*s", scanned_token->length, scanned_token->value);
+        if (strncmp(var_word, target, 8) == 0) return true;
+    }
+    return false;
 }
 
 token scan_alfabet(char *input) {
@@ -274,11 +289,17 @@ token scan_angka_bulat(char *input) {
 
 token scan_nama(char *input) {
     token result;
+
+    // TODO: Implement name scanner
+
     return result;
 }
 
 token scan_untaian(char *input) {
     token result;
+
+    // TODO: Implement string scanner
+
     return result;
 }
 
