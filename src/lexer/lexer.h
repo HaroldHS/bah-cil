@@ -16,6 +16,10 @@ typedef struct {
 
 bool check_token_string(token *scanned_token, TERMINAL type, char *target);
 
+void consume_next_if_current_type_match(token *given, TERMINAL type);
+
+void consume_next_if_current_string_match(token *given, TERMINAL type, char *target);
+
 token scan_token(char *input);
 
 token scan_alfabet(char *input);

@@ -2,6 +2,7 @@
 #define constants_h
 
 #define ERR_MSG_MAX_LEN           200
+#define MAX_ITERATION             1024
 #define MAX_TOKEN_IN_ONE_AST_NODE 10
 
 /*
@@ -23,7 +24,8 @@
 /*
  * Error constants for parser
  */
-#define PARS_VARIABEL_ERR "failed to parse variable"
+#define PARS_VARIABEL_ERR  "failed to parse variable"
+#define PARS_KONSTANTA_ERR "failed to parse constant"
 
 /*
  * Macro to stringify string constants to obtain the constant name

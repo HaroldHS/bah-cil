@@ -16,11 +16,11 @@ token scan_token(char *input) {
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID_TERMINAL) return result;
 
-    //result = scan_nama(input);
+    //result = scan_nama(input); /* precedence = NAMA first then ALFABET */
     //if (result.type != INVALID_TERMINAL) return result;
 
-    //result = scan_untaian(input);
-    //if (result.type != INVALID_TERMINAL) return result;
+    result = scan_untaian(input); /* first '`' indicates string */
+    if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka_bulat(input);
     if (result.type != INVALID_TERMINAL) return result;
@@ -59,9 +59,33 @@ bool check_token_string(token *scanned_token, TERMINAL type, char *target) {
     if (scanned_token->type == type) {
         char var_word[scanned_token->length];
         sprintf(var_word, "%.*s", scanned_token->length, scanned_token->value);
-        if (strncmp(var_word, target, 8) == 0) return true;
+        if (strncmp(var_word, target, strlen(target)) == 0) return true;
     }
     return false;
+}
+
+/*
+ * consume_next_if_current_type_match() is the boilerplate for consuming & update 
+ * given token to next token if the type is matched, otherwise just stay as it is 
+ * (for parser.c)
+ */
+void consume_next_if_current_type_match(token *given, TERMINAL type) {
+    if (given->type == type) {
+        *given = scan_token(given->next);
+    }
+}
+
+/*
+ * consume_next_if_current_string_match() is the boilerplate for consuming & update 
+ * given token to next token if the type & string are matched, otherwise just stay 
+ * as it is (for parser.c)
+ */
+void consume_next_if_current_string_match(token *given, TERMINAL type, char *target) {
+    if (given->type == type) {
+        char var_word[given->length];
+        sprintf(var_word, "%.*s", given->length, given->value);
+        if (strncmp(var_word, target, strlen(target)) == 0) *given = scan_token(given->next);
+    }
 }
 
 token scan_alfabet(char *input) {
@@ -72,18 +96,16 @@ token scan_alfabet(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ALFABET_ERR, sizeof(result.error_msg)-1);
 
-    int idx = 0;
     bool is_alfabet = false;
-    for(;;) {
-        if ((65 <= input[idx] && input[idx] <= 90) || 
-                (97 <= input[idx] && input[idx] <= 122)) {
+    for (int idx = 0; idx < MAX_ITERATION; idx++) {
+        if (('A' <= input[idx] && input[idx] <= 'Z') || 
+                ('a' <= input[idx] && input[idx] <= 'z')) {
             if (!is_alfabet) is_alfabet = true; /* set flag only at first time */
-            result.next++;
-            result.length++;
-            idx++;
             continue;
-        } /* 'A' <= input <= 'Z' || 'a' <= input <= 'z' */
-        break;
+        }
+        result.next += idx;
+        result.length += idx;
+        break; /* break in case of non-alphabet char index < MAX_ITERATION */
     }
 
     if (is_alfabet) {
@@ -101,17 +123,15 @@ token scan_angka(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_ERR, sizeof(result.error_msg)-1);
 
-    int idx = 0;
     bool is_angka = false;
-    for(;;) {
-        if (48 <= input[idx] && input[idx] <= 57) {
+    for (int idx = 0; idx < MAX_ITERATION; idx++) {
+        if ('0' <= input[idx] && input[idx] <= '9') {
             if (!is_angka) is_angka = true;
-            result.next++;
-            result.length++;
-            idx++;
             continue;
-        } /* '0' <= input <= '9' */
-        break;
+        }
+        result.next += idx;
+        result.length += idx;
+        break; /* break in case of digit char index < MAX_ITERATION */
     }
 
     if (is_angka) {
@@ -129,11 +149,11 @@ token scan_simbol(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_SIMBOL_ERR, sizeof(result.error_msg)-1);
 
-    char list_of_symbols[22] = {
+    char list_of_symbols[23] = {
         '[', ']', '{', '}', '(', ')', '<', '>', '\'', '"',
-        '.', ',', ';', '+', '-', '*', '/', '\\', '?', '|',
-        '&', '_'};
-    for (int i=0; i<22; i++) {
+        '=', '.', ',', ';', '+', '-', '*', '/', '\\', '?',
+        '|', '&', '_'};
+    for (int i=0; i<23; i++) {
         if (input[0] == list_of_symbols[i]) {
             result.type = SIMBOL;
             result.next++;
@@ -141,7 +161,7 @@ token scan_simbol(char *input) {
             strncpy(result.error_msg, "\0", 1);
             break;
         }
-    } /* iterate through list_of_symbols, 22 = length of list_of_symbols */
+    } /* iterate through list_of_symbols */
     return result;
 }
 
@@ -207,6 +227,7 @@ token scan_identasi(char *input) {
         if ((simbol_identasi_token.length == 0) && (spasi_token.length == 0)) {
             break; /* stop if input is neither simbol_identasi nor spasi */
         }
+        break; /* preventing infinite loop for unintended case */
     }
     return result;
 }
@@ -241,13 +262,11 @@ token scan_boolean(char *input) {
     bool is_benar_flag = true;
     bool is_salah_flag = true;
 
-    for (int i=0; i<5; i++) {
-        if ((input[i] != benar[i]) && is_benar_flag) {
-            is_benar_flag = false;
-        }
-        if ((input[i] != salah[i]) && is_salah_flag) {
-            is_salah_flag = false;
-        }
+    if (strncmp(input, benar, 5) != 0) {
+        is_benar_flag = false;
+    }
+    if (strncmp(input, salah, 5) != 0) {
+        is_salah_flag = false;
     }
 
     if (is_benar_flag || is_salah_flag) {
@@ -287,18 +306,35 @@ token scan_angka_bulat(char *input) {
     return result;
 }
 
-token scan_nama(char *input) {
+token scan_untaian(char *input) {
     token result;
+    result.next = input;
+    result.value = input;
+    result.length = 0;
+    result.type = INVALID_TERMINAL;
+    strncpy(result.error_msg, LEX_UNTAIAN_ERR, sizeof(result.error_msg)-1);
 
-    // TODO: Implement name scanner
+    if (input[0] != '`') {
+        return result;
+    }
+
+    for (int idx = 1; idx <= MAX_ITERATION; idx++) {
+        if (input[idx] == '`') {
+            result.type = UNTAIAN;
+            result.next += idx + 1; /* +1 is added due to first backtick symbol */
+            result.length += idx + 1;
+            strncpy(result.error_msg, "\0", 1);
+            break;
+        }
+    } /* starts from 1 to skip the first backtick symbol */
 
     return result;
 }
 
-token scan_untaian(char *input) {
+token scan_nama(char *input) {
     token result;
 
-    // TODO: Implement string scanner
+    // TODO: Implement name scanner
 
     return result;
 }
