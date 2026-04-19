@@ -16,9 +16,6 @@ token scan_token(char *input) {
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID_TERMINAL) return result;
 
-    //result = scan_nama(input); /* precedence = NAMA first then ALFABET */
-    //if (result.type != INVALID_TERMINAL) return result;
-
     result = scan_untaian(input); /* first '`' indicates string */
     if (result.type != INVALID_TERMINAL) return result;
 
@@ -47,6 +44,9 @@ token scan_token(char *input) {
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_boolean(input);
+    if (result.type != INVALID_TERMINAL) return result;
+
+    result = scan_nama(input); /* precedence = ALFABET first then NAMA to prevent colission */
     if (result.type != INVALID_TERMINAL) return result;
 
     return result; /* default fallback after last call still invalid */
@@ -333,8 +333,40 @@ token scan_untaian(char *input) {
 
 token scan_nama(char *input) {
     token result;
+    result.next = input;
+    result.value = input;
+    result.length = 0;
+    result.type = INVALID_TERMINAL;
+    strncpy(result.error_msg, LEX_NAMA_ERR, sizeof(result.error_msg)-1);
 
-    // TODO: Implement name scanner
+    int nama_length = 0;
+    token nama = scan_alfabet(input);
+    if (nama.type == ALFABET) {
+        nama_length += nama.length; /* update length of first encountered `alfabet` */
+        for (int counter = 0; counter < MAX_ITERATION; counter++) {
+            nama = scan_alfabet(nama.next);
+            if (nama.type == ALFABET) {
+                nama_length += nama.length;
+                continue;
+            }
+            nama = scan_angka(nama.next);
+            if (nama.type == ANGKA) {
+                nama_length += nama.length;
+                continue;
+            }
+            nama = scan_simbol(nama.next);
+            if (nama.type == SIMBOL && nama.value[0] == '_') {
+                nama_length++;
+                continue;
+            }
+            break;
+        }
+
+        result.type = NAMA;
+        result.next += nama_length;
+        result.length += nama_length;
+        strncpy(result.error_msg, "\0", 1);
+    }
 
     return result;
 }

@@ -24,8 +24,11 @@
 /*
  * Error constants for parser
  */
-#define PARS_VARIABEL_ERR  "failed to parse variable"
-#define PARS_KONSTANTA_ERR "failed to parse constant"
+#define PARS_VARIABEL_ERR        "failed to parse variable"
+#define PARS_KONSTANTA_ERR       "failed to parse constant"
+#define PARS_EKSP_ARITMATIKA_ERR "failed to parse constant"
+#define PARS_ISTILAH_ERR         "failed to parse constant"
+#define PARS_FAKTOR_ERR          "failed to parse constant"
 
 /*
  * Macro to stringify string constants to obtain the constant name

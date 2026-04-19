@@ -18,6 +18,7 @@ typedef enum {
 } TERMINAL;
 
 typedef enum {
+    NEGASI,
     VARIABEL,
     KONSTANTA,
     ARITMATIKA,
