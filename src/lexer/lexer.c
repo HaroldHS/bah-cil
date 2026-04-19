@@ -13,10 +13,16 @@ token scan_token(char *input) {
     token result;
 
     // Order of the pattern matching affects the token precedence
+    result = scan_untaian(input); /* first '`' indicates string */
+    if (result.type != INVALID_TERMINAL) return result;
+
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID_TERMINAL) return result;
 
-    result = scan_untaian(input); /* first '`' indicates string */
+    result = scan_nama(input); /* precedence = NAMA first then KATA */
+    if (result.type != INVALID_TERMINAL) return result;
+
+    result = scan_kata(input); /* precedence = KATA first then ALFABET */
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka_bulat(input);
@@ -44,9 +50,6 @@ token scan_token(char *input) {
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_boolean(input);
-    if (result.type != INVALID_TERMINAL) return result;
-
-    result = scan_nama(input); /* precedence = ALFABET first then NAMA to prevent colission */
     if (result.type != INVALID_TERMINAL) return result;
 
     return result; /* default fallback after last call still invalid */
@@ -96,22 +99,33 @@ token scan_alfabet(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ALFABET_ERR, sizeof(result.error_msg)-1);
 
-    bool is_alfabet = false;
-    for (int idx = 0; idx < MAX_ITERATION; idx++) {
-        if (('A' <= input[idx] && input[idx] <= 'Z') || 
-                ('a' <= input[idx] && input[idx] <= 'z')) {
-            if (!is_alfabet) is_alfabet = true; /* set flag only at first time */
-            continue;
-        }
-        result.next += idx;
-        result.length += idx;
-        break; /* break in case of non-alphabet char index < MAX_ITERATION */
-    }
+    //bool is_alfabet = false;
+    //for (int idx = 0; idx < MAX_ITERATION; idx++) {
+    //    if (('A' <= input[idx] && input[idx] <= 'Z') || 
+    //            ('a' <= input[idx] && input[idx] <= 'z')) {
+    //        if (!is_alfabet) is_alfabet = true; /* set flag only at first time */
+    //        continue;
+    //    }
+    //    result.next += idx;
+    //    result.length += idx;
+    //    break; /* break in case of non-alphabet char index < MAX_ITERATION */
+    //}
 
+    /*
     if (is_alfabet) {
         result.type = ALFABET;
         strncpy(result.error_msg, "\0", 1);
     }
+    */
+
+    if (('A' <= input[0] && input[0] <= 'Z') || 
+            ('a' <= input[0] && input[0] <= 'z')) {
+        result.type = ALFABET;
+        result.next++;
+        result.length++;
+        strncpy(result.error_msg, "\0", 1);
+    }
+
     return result;
 }
 
@@ -123,21 +137,31 @@ token scan_angka(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_ERR, sizeof(result.error_msg)-1);
 
-    bool is_angka = false;
-    for (int idx = 0; idx < MAX_ITERATION; idx++) {
-        if ('0' <= input[idx] && input[idx] <= '9') {
-            if (!is_angka) is_angka = true;
-            continue;
-        }
-        result.next += idx;
-        result.length += idx;
-        break; /* break in case of digit char index < MAX_ITERATION */
-    }
+    //bool is_angka = false;
+    //for (int idx = 0; idx < MAX_ITERATION; idx++) {
+    //    if ('0' <= input[idx] && input[idx] <= '9') {
+    //        if (!is_angka) is_angka = true;
+    //        continue;
+    //    }
+    //    result.next += idx;
+    //    result.length += idx;
+    //    break; /* break in case of digit char index < MAX_ITERATION */
+    //}
 
+    /*
     if (is_angka) {
         result.type = ANGKA;
         strncpy(result.error_msg, "\0", 1);
     }
+    */
+
+    if ('0' <= input[0] && input[0] <= '9') {
+        result.type = ANGKA;
+        result.next++;
+        result.length++;
+        strncpy(result.error_msg, "\0", 1);
+    }
+
     return result;
 }
 
@@ -211,7 +235,7 @@ token scan_identasi(char *input) {
     result.length = 0;
     strncpy(result.error_msg, "\0", 1);
 
-    for (;;) {
+    for (int counter = 0; counter < MAX_ITERATION; counter++) {
         token simbol_identasi_token = scan_simbol_identasi(input);
         token spasi_token = scan_simbol_identasi(input);
         if (simbol_identasi_token.length != 0) {
@@ -227,7 +251,6 @@ token scan_identasi(char *input) {
         if ((simbol_identasi_token.length == 0) && (spasi_token.length == 0)) {
             break; /* stop if input is neither simbol_identasi nor spasi */
         }
-        break; /* preventing infinite loop for unintended case */
     }
     return result;
 }
@@ -286,21 +309,39 @@ token scan_angka_bulat(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_BULAT_ERR, sizeof(result.error_msg)-1);
 
+    bool first_angka_flag = false;
     if (input[0] == '-') {
-        token angka_token = scan_angka(++input);
-        if (angka_token.type == ANGKA) {
-            result.type = ANGKA_BULAT;
-            result.next += angka_token.length + 1; /* +1 due to minus symbol */
-            result.length += angka_token.length + 1;
-            strncpy(result.error_msg, "\0", 1);
+        for (int counter = 0; counter < MAX_ITERATION; counter++) {
+            token angka_token = scan_angka(++input);
+            if (angka_token.type == ANGKA) {
+                /* flag is used to call methods just one time (prevent excessive call)*/
+                if (!first_angka_flag) {
+                    strncpy(result.error_msg, "\0", 1);
+                    result.type = ANGKA_BULAT;
+                    first_angka_flag = true;
+                    result.next++; /* +1 due to first encountered minus symbol*/
+                    result.length++;
+                }
+                result.next++;
+                result.length++;
+                continue;
+            }
+            break;
         }
     } else {
-        token angka_token = scan_angka(input);
-        if (angka_token.type == ANGKA) {
-            result.type = ANGKA_BULAT;
-            result.next += angka_token.length;
-            result.length += angka_token.length;
-            strncpy(result.error_msg, "\0", 1);
+        for (int counter = 0; counter < MAX_ITERATION; counter++) {
+            token angka_token = scan_angka(input++);
+            if (angka_token.type == ANGKA) {
+                if (!first_angka_flag) {
+                    strncpy(result.error_msg, "\0", 1);
+                    result.type = ANGKA_BULAT;
+                    first_angka_flag = true;
+                }
+                result.next++;
+                result.length++;
+                continue;
+            }
+            break;
         }
     } /* if negative number {...} else {-- handle positive number --} */
     return result;
@@ -339,33 +380,77 @@ token scan_nama(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_NAMA_ERR, sizeof(result.error_msg)-1);
 
-    int nama_length = 0;
     token nama = scan_alfabet(input);
+    int second_nama_ptr = 1;
+    int first_alfabet_ptr = 1;
+    /*
+     * poiter condition: 1. "nama" should be ALFABET, as a result, scan_nama retuns invalid
+     *                   2. "nama123_test" should be NAMA
+     *                          ||
+     *     first_alfabet_ptr <--+|
+     *                           +-> second_nama_ptr (goes on)
+     *
+     * As a result, the indicator is first_alfabet_ptr < second_nama_ptr
+     */
     if (nama.type == ALFABET) {
-        nama_length += nama.length; /* update length of first encountered `alfabet` */
-        for (int counter = 0; counter < MAX_ITERATION; counter++) {
+        for (int counter = 1; counter <= MAX_ITERATION; counter++) {
             nama = scan_alfabet(nama.next);
             if (nama.type == ALFABET) {
-                nama_length += nama.length;
+                first_alfabet_ptr++;
+                second_nama_ptr++;
                 continue;
             }
             nama = scan_angka(nama.next);
             if (nama.type == ANGKA) {
-                nama_length += nama.length;
+                second_nama_ptr++;
                 continue;
             }
             nama = scan_simbol(nama.next);
             if (nama.type == SIMBOL && nama.value[0] == '_') {
-                nama_length++;
+                second_nama_ptr++;
                 continue;
             }
             break;
         }
 
-        result.type = NAMA;
-        result.next += nama_length;
-        result.length += nama_length;
-        strncpy(result.error_msg, "\0", 1);
+        if (first_alfabet_ptr < second_nama_ptr) {
+            result.type = NAMA;
+            result.next += second_nama_ptr;
+            result.length += second_nama_ptr;
+            strncpy(result.error_msg, "\0", 1);
+        }
+    }
+
+    return result;
+}
+
+token scan_kata(char *input) {
+    token result;
+    result.next = input;
+    result.value = input;
+    result.length = 0;
+    result.type = INVALID_TERMINAL;
+    strncpy(result.error_msg, LEX_KATA_ERR, sizeof(result.error_msg)-1);
+
+    token nama = scan_alfabet(input);
+    int second_alfabet_ptr = 1;
+    int first_alfabet_ptr = 1;
+    if (nama.type == ALFABET) {
+        for (int counter = 1; counter < MAX_ITERATION; counter++) {
+            nama = scan_alfabet(nama.next);
+            if (nama.type == ALFABET) {
+                second_alfabet_ptr++;
+                continue;
+            }
+            break;
+        }
+
+        if (first_alfabet_ptr < second_alfabet_ptr) {
+            result.type = KATA;
+            result.next += second_alfabet_ptr;
+            result.length += second_alfabet_ptr;
+            strncpy(result.error_msg, "\0", 1);
+        }
     }
 
     return result;

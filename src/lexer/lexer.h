@@ -44,6 +44,8 @@ token scan_untaian(char *input);
 
 token scan_nama(char *input);
 
+token scan_kata(char *input);
+
 token scan_kata_kunci_tipe_data(char *input);
 
 token scan_variabel(char *input);

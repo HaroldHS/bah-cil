@@ -50,6 +50,14 @@ int main() {
     printf("Terminal token error message: %s\n", result6.error_msg);
     printf("Next string: %s\n\n", result6.next);
 
+    char *test7 = "nama123_test";
+    token result7 = scan_token(test7);
+    printf("Terminal token: %s\n", result7.value);
+    printf("Terminal token type: %s\n", get_terminal_name(result7.type));
+    printf("Terminal token value: %.*s\n", result7.length, result7.value);
+    printf("Terminal token error message: %s\n", result7.error_msg);
+    printf("Next string: %s\n\n", result7.next);
+
     /* Parser example*/
     char *expr_input_1 = "variabel bilangan-bulat test = 123;";
     ast_node expr_result_1 = parse_variabel(expr_input_1);

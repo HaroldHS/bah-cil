@@ -19,6 +19,7 @@
 #define LEX_ANGKA_BULAT_ERR          "failed to scan integer"
 #define LEX_UNTAIAN_ERR              "failed to scan string"
 #define LEX_NAMA_ERR                 "failed to scan name"
+#define LEX_KATA_ERR                 "failed to scan word"
 #define LEX_KATA_KUNCI_TIPE_DATA_ERR "failed to scan keyword"
 
 /*

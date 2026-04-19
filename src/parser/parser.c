@@ -11,13 +11,14 @@ ast_node parse_variabel(char *input) {
     strncpy(result.error_msg, PARS_VARIABEL_ERR, sizeof(result.error_msg)-1);
 
     token curr_token = scan_token(input);
-    consume_next_if_current_string_match(&curr_token, ALFABET, "variabel");
+    consume_next_if_current_string_match(&curr_token, KATA, "variabel");
     consume_next_if_current_type_match(&curr_token, SPASI);
     consume_next_if_current_type_match(&curr_token, KATA_KUNCI_TIPE_DATA);
     consume_next_if_current_type_match(&curr_token, SPASI);
-    if (curr_token.type == ALFABET) {
-        result.value[0] = curr_token;
-    } /* variable name */
+    if ((curr_token.type != KATA) && (curr_token.type != NAMA)) {
+        return result;
+    }
+    result.value[0] = curr_token; /* variable name */
 
     curr_token = scan_token(curr_token.next);
     consume_next_if_current_type_match(&curr_token, SPASI);
@@ -42,11 +43,11 @@ ast_node parse_konstanta(char *input) {
     strncpy(result.error_msg, PARS_KONSTANTA_ERR, sizeof(result.error_msg)-1);
 
     token curr_token = scan_token(input);
-    consume_next_if_current_string_match(&curr_token, ALFABET, "konstanta");
+    consume_next_if_current_string_match(&curr_token, KATA, "konstanta");
     consume_next_if_current_type_match(&curr_token, SPASI);
     consume_next_if_current_type_match(&curr_token, KATA_KUNCI_TIPE_DATA);
     consume_next_if_current_type_match(&curr_token, SPASI);
-    if (curr_token.type != ALFABET) {
+    if ((curr_token.type != KATA) && (curr_token.type != NAMA)) {
         return result;
     }
     result.value[0] = curr_token; /* variable name */

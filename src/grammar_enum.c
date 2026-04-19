@@ -12,6 +12,7 @@ const char* get_terminal_name(TERMINAL t) {
         case ANGKA_BULAT:          return "ANGKA_BULAT";
         case UNTAIAN:              return "UNTAIAN";
         case NAMA:                 return "NAMA";
+        case KATA:                 return "KATA";
         case KATA_KUNCI_TIPE_DATA: return "KATA_KUNCI_TIPE_DATA";
         case INVALID_TERMINAL:     return "INVALID";
         default:                   return "INVALID";
@@ -20,6 +21,7 @@ const char* get_terminal_name(TERMINAL t) {
 
 const char* get_expression_name(EXPRESSION e) {
     switch (e) {
+        case NEGASI:             return "NEGASI";
         case VARIABEL:           return "VARIABEL";
         case KONSTANTA:          return "KONSTANTA";
         case ARITMATIKA:         return "ARITMATIKA";
