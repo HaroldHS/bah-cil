@@ -99,25 +99,6 @@ token scan_alfabet(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ALFABET_ERR, sizeof(result.error_msg)-1);
 
-    //bool is_alfabet = false;
-    //for (int idx = 0; idx < MAX_ITERATION; idx++) {
-    //    if (('A' <= input[idx] && input[idx] <= 'Z') || 
-    //            ('a' <= input[idx] && input[idx] <= 'z')) {
-    //        if (!is_alfabet) is_alfabet = true; /* set flag only at first time */
-    //        continue;
-    //    }
-    //    result.next += idx;
-    //    result.length += idx;
-    //    break; /* break in case of non-alphabet char index < MAX_ITERATION */
-    //}
-
-    /*
-    if (is_alfabet) {
-        result.type = ALFABET;
-        strncpy(result.error_msg, "\0", 1);
-    }
-    */
-
     if (('A' <= input[0] && input[0] <= 'Z') || 
             ('a' <= input[0] && input[0] <= 'z')) {
         result.type = ALFABET;
@@ -136,24 +117,6 @@ token scan_angka(char *input) {
     result.length = 0;
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_ANGKA_ERR, sizeof(result.error_msg)-1);
-
-    //bool is_angka = false;
-    //for (int idx = 0; idx < MAX_ITERATION; idx++) {
-    //    if ('0' <= input[idx] && input[idx] <= '9') {
-    //        if (!is_angka) is_angka = true;
-    //        continue;
-    //    }
-    //    result.next += idx;
-    //    result.length += idx;
-    //    break; /* break in case of digit char index < MAX_ITERATION */
-    //}
-
-    /*
-    if (is_angka) {
-        result.type = ANGKA;
-        strncpy(result.error_msg, "\0", 1);
-    }
-    */
 
     if ('0' <= input[0] && input[0] <= '9') {
         result.type = ANGKA;
