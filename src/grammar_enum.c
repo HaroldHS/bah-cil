@@ -12,7 +12,6 @@ const char* get_terminal_name(TERMINAL t) {
         case ANGKA_BULAT:          return "ANGKA_BULAT";
         case UNTAIAN:              return "UNTAIAN";
         case NAMA:                 return "NAMA";
-        case KATA:                 return "KATA";
         case KATA_KUNCI_TIPE_DATA: return "KATA_KUNCI_TIPE_DATA";
         case INVALID_TERMINAL:     return "INVALID";
         default:                   return "INVALID";

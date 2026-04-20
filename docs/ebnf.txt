@@ -39,19 +39,16 @@ untaian = "`" {alfabet | angka | simbol | spasi} "`" .
 (* identifier *)
 nama = alfabet {alfabet | angka | "_"} .
 
-(* word *)
-kata = alfabet {alfabet};
-
 (* datatype keyword *)
 kata_kunci_tipe_data = "bilangan-bulat" | "boolean" | "untaian" .
 
 (* variable expression *)
-(* "variabel" == kata *)
-variabel = "variabel" spasi kata_kunci_tipe_data spasi {nama | kata} spasi "=" spasi (angka_bulat | boolean | untaian) berhenti .
+(* "variabel" == nama *)
+variabel = "variabel" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi (angka_bulat | boolean | untaian) berhenti .
 
 (* constant expression *)
-(* "konstanta" == kata *)
-konstanta = "konstanta" spasi kata_kunci_tipe_data spasi {nama | kata} spasi "=" spasi ( angka_bulat | boolean | untaian) berhenti .
+(* "konstanta" == nama *)
+konstanta = "konstanta" spasi kata_kunci_tipe_data spasi nama spasi "=" spasi ( angka_bulat | boolean | untaian) berhenti .
 
 (*
     arithmetic expression, implemented with Recursive Descent Parser method

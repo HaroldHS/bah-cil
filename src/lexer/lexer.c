@@ -22,9 +22,6 @@ token scan_token(char *input) {
     result = scan_nama(input); /* precedence = NAMA first then KATA */
     if (result.type != INVALID_TERMINAL) return result;
 
-    result = scan_kata(input); /* precedence = KATA first then ALFABET */
-    if (result.type != INVALID_TERMINAL) return result;
-
     result = scan_angka_bulat(input);
     if (result.type != INVALID_TERMINAL) return result;
 
@@ -344,76 +341,28 @@ token scan_nama(char *input) {
     strncpy(result.error_msg, LEX_NAMA_ERR, sizeof(result.error_msg)-1);
 
     token nama = scan_alfabet(input);
-    int second_nama_ptr = 1;
-    int first_alfabet_ptr = 1;
-    /*
-     * poiter condition: 1. "nama" should be ALFABET, as a result, scan_nama retuns invalid
-     *                   2. "nama123_test" should be NAMA
-     *                          ||
-     *     first_alfabet_ptr <--+|
-     *                           +-> second_nama_ptr (goes on)
-     *
-     * As a result, the indicator is first_alfabet_ptr < second_nama_ptr
-     */
+    int counter;
     if (nama.type == ALFABET) {
-        for (int counter = 1; counter <= MAX_ITERATION; counter++) {
+        for (counter = 1; counter <= MAX_ITERATION; counter++) {
             nama = scan_alfabet(nama.next);
             if (nama.type == ALFABET) {
-                first_alfabet_ptr++;
-                second_nama_ptr++;
                 continue;
             }
             nama = scan_angka(nama.next);
             if (nama.type == ANGKA) {
-                second_nama_ptr++;
                 continue;
             }
             nama = scan_simbol(nama.next);
             if (nama.type == SIMBOL && nama.value[0] == '_') {
-                second_nama_ptr++;
                 continue;
             }
             break;
         }
 
-        if (first_alfabet_ptr < second_nama_ptr) {
-            result.type = NAMA;
-            result.next += second_nama_ptr;
-            result.length += second_nama_ptr;
-            strncpy(result.error_msg, "\0", 1);
-        }
-    }
-
-    return result;
-}
-
-token scan_kata(char *input) {
-    token result;
-    result.next = input;
-    result.value = input;
-    result.length = 0;
-    result.type = INVALID_TERMINAL;
-    strncpy(result.error_msg, LEX_KATA_ERR, sizeof(result.error_msg)-1);
-
-    token nama = scan_alfabet(input);
-    int second_alfabet_ptr = 1;
-    int first_alfabet_ptr = 1;
-    if (nama.type == ALFABET) {
-        for (int counter = 1; counter < MAX_ITERATION; counter++) {
-            nama = scan_alfabet(nama.next);
-            if (nama.type == ALFABET) {
-                second_alfabet_ptr++;
-                continue;
-            }
-            break;
-        }
-
-        if (first_alfabet_ptr < second_alfabet_ptr) {
-            result.type = KATA;
-            result.next += second_alfabet_ptr;
-            result.length += second_alfabet_ptr;
-            strncpy(result.error_msg, "\0", 1);
-        }
+        result.type = NAMA;
+        result.next += counter;
+        result.length += counter;
+        strncpy(result.error_msg, "\0", 1);
     }
 
     return result;

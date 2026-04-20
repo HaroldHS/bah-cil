@@ -13,7 +13,6 @@ typedef enum {
     ANGKA_BULAT,
     UNTAIAN,
     NAMA,
-    KATA,
     KATA_KUNCI_TIPE_DATA,
     INVALID_TERMINAL
 } TERMINAL;
