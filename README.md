@@ -1,4 +1,6 @@
 # bah-cil
+bah-cil (short for Bahasa Kecil) is a small and compact programming language for beginner 
+in order to learn programming with **basic bahasa** syntax.
 
 > NOTE: This programming language is not intended for **PRODUCTION** at all. **DO NOT USE IN PRODUCTION ENVIRONMENT**.
 
@@ -18,4 +20,11 @@
 |   +-- main.c   # Compiler entrypoint
 |-- tests/       # Unit & integration test
 +-- Makefile     # Build system configuration
+```
+
+## Commands
+```sh
+make build # build binary
+make test  # perform testing
+make clean # clean all builds in /build directory
 ```
