@@ -16,16 +16,21 @@ token scan_token(char *input) {
     result = scan_untaian(input); /* first '`' indicates string */
     if (result.type != INVALID_TERMINAL) return result;
 
+    /* start of reserved keywords */
     result = scan_kata_kunci_tipe_data(input);
     if (result.type != INVALID_TERMINAL) return result;
 
-    result = scan_nama(input); /* precedence = NAMA first then KATA */
+    result = scan_boolean(input);
+    if (result.type != INVALID_TERMINAL) return result;
+    /* end of reserved keywords */
+
+    result = scan_nama(input);
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_angka_bulat(input);
     if (result.type != INVALID_TERMINAL) return result;
 
-    result = scan_berhenti(input); /* first ';' labelled as BERHENTI, not SIMBOL */
+    result = scan_berhenti(input); /* first ';' labeled as BERHENTI, not SIMBOL */
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_alfabet(input);
@@ -44,9 +49,6 @@ token scan_token(char *input) {
     if (result.type != INVALID_TERMINAL) return result;
 
     result = scan_identasi(input);
-    if (result.type != INVALID_TERMINAL) return result;
-
-    result = scan_boolean(input);
     if (result.type != INVALID_TERMINAL) return result;
 
     return result; /* default fallback after last call still invalid */
