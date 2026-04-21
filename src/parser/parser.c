@@ -32,6 +32,7 @@ ast_node parse_variabel(char *input) {
     curr_token = scan_token(curr_token.next);
     if (curr_token.type == BERHENTI) {
         result.type = VARIABEL;
+        result.next_input = curr_token.next;
         strncpy(result.error_msg, "\0", 1);
     }
     return result;
@@ -64,6 +65,7 @@ ast_node parse_konstanta(char *input) {
     curr_token = scan_token(curr_token.next);
     if (curr_token.type == BERHENTI) {
         result.type = KONSTANTA;
+        result.next_input = curr_token.next;
         strncpy(result.error_msg, "\0", 1);
     }
     return result;
@@ -96,6 +98,7 @@ ast_node parse_faktor(char *input) {
     consume_next_if_current_type_match(&curr_token, SPASI);
     if (curr_token.type == NAMA) {
         result.type = FAKTOR;
+        result.next_input = curr_token.next;
         result.value[0] = curr_token;
         strncpy(result.error_msg, "\0", 1);
         return result;
@@ -105,16 +108,40 @@ ast_node parse_faktor(char *input) {
     curr_token = scan_token(input);
     if (curr_token.type == ANGKA_BULAT) {
         result.type = FAKTOR;
+        result.next_input = curr_token.next;
         result.value[0] = curr_token;
         strncpy(result.error_msg, "\0", 1);
         return result;
     }
 
     /* third case, ekspresi_aritmatika. restart from first input */
-    // TODO: call parse_ekspresi_aritmatika();
+    /*
+    curr_token = scan_token(input);
+    if (curr_token.type == SIMBOL && curr_token.value == "(") {
+        // TODO: call parse_ekspresi_aritmatika()
+    }
+    */
 
     /* forth case, negation. restart from first input */
-    // TODO: negate & call parse_faktor
+    curr_token = scan_token(input);
+    if (curr_token.type == SIMBOL && *(curr_token.value) == '~') {
+        curr_token = scan_token(curr_token.next);
+        if (curr_token.type != SIMBOL && *(curr_token.value) != '(') {
+            return result;
+        }
+
+        ast_node temp_result = parse_faktor(curr_token.next);
+        curr_token = scan_token(temp_result.next_input);
+        if (curr_token.type != SIMBOL && *(curr_token.value) != ')') {
+            return result;
+        }
+
+        result.type = NEGASI;
+        result.next_input = temp_result.next_input;
+        result.left = &temp_result;
+        strncpy(result.error_msg, "\0", 1);
+        return result;
+    }
 
     return result;
 }

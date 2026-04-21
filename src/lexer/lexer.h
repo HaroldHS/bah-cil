@@ -7,11 +7,11 @@
 #include "../grammar_enum.h"
 
 typedef struct {
-    TERMINAL type;
     char     *value;
     char     *next;
     int      length;
     char     error_msg[ERR_MSG_MAX_LEN];
+    TERMINAL type;
 } token;
 
 bool check_token_string(token *scanned_token, TERMINAL type, char *target);

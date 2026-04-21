@@ -135,11 +135,11 @@ token scan_simbol(char *input) {
     result.type = INVALID_TERMINAL;
     strncpy(result.error_msg, LEX_SIMBOL_ERR, sizeof(result.error_msg)-1);
 
-    char list_of_symbols[23] = {
+    char list_of_symbols[24] = {
         '[', ']', '{', '}', '(', ')', '<', '>', '\'', '"',
         '=', '.', ',', ';', '+', '-', '*', '/', '\\', '?',
-        '|', '&', '_'};
-    for (int i=0; i<23; i++) {
+        '|', '&', '_', '~'};
+    for (int i=0; i<24; i++) {
         if (input[0] == list_of_symbols[i]) {
             result.type = SIMBOL;
             result.next++;
