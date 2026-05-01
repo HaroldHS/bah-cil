@@ -18,6 +18,10 @@ typedef enum {
 } TERMINAL;
 
 typedef enum {
+    TAMBAH,
+    KURANG,
+    KALI,
+    BAGI,
     NEGASI,
     VARIABEL,
     KONSTANTA,
